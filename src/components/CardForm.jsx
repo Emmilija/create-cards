@@ -32,7 +32,7 @@ setCardInfo({
 
 
     return(
-<div className="bg-white border p-4 w-full h-32 ">
+<div className="bg-white border p-4  ">
    <h1>Add your card details</h1>
 <div className="flex-column items-center justify-center">
 <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={handleSubmit}>
@@ -60,7 +60,7 @@ setCardInfo({
             className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
             id="number"
             type="text"
-            placeholder=" 0000 0000 0000 0000"
+            placeholder=" 0000  0000  0000  0000"
             name="number"
             value={cardInfo.number}
             onChange={handleChange}

@@ -4,7 +4,6 @@
 .btn {
   background-color: #4C00C2;
     color: #fff;
-    border-radius: 12px;
     padding: 16px 110px;
     border-radius: 25px;
     cursor: pointer;
@@ -12,7 +11,7 @@
 }
 
 .card-container {
-margin-top: 4rem;
+margin-top: 2rem;
   background-color: #3B058E;
  width: 98%;
  height: 14rem;
@@ -23,6 +22,23 @@ background-image: url('../assets//images/card-background-shape.svg');
     background-position: center;
 
 }
+.card-container.two::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #01c9c7; 
+  background-image: url('../assets//images/card-background-visa.svg' );
+
+  background-blend-mode: multiply; 
+  background-size: cover;
+  background-position: center;
+  border-radius: 22px;
+}
+
+
 .card {
   position: absolute;
   width: 100%;
@@ -47,18 +63,16 @@ background-image: url('../assets//images/card-background-shape.svg');
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-self: center;
-  align-items: center;
   height: 50%;
   width: 80%;
-  margin: 1rem;
+  margin: 2rem;
 }
+
+
+
+
 
 @tailwind utilities;
 
-/* @layer base {
-    :root {
-  
-    }
-} */
+
 
