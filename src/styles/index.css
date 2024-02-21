@@ -47,6 +47,7 @@ background-image: url('../assets//images/card-background-shape.svg');
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-self: center;
   align-items: center;
   height: 50%;
   width: 80%;
