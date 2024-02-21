@@ -2,10 +2,18 @@ import Button from "./components/Button";
 import "./styles/global.css"
 import "./styles/index.css"
 import CardList from "./components/CardList";
-
+import CardForm from "./components/CardForm";
+import { useState } from "react";
 
 function App() {
-  // Function to get current time
+  const [showCardForm, setShowCardForm] = useState(false);
+
+
+
+  const handleOpenForm = () => {
+    setShowCardForm(true);
+};
+  
   const getCurrentTime = () => {
     const now = new Date();
     return now.toLocaleTimeString('en-US', { hour12: false });
@@ -69,13 +77,20 @@ function App() {
         <h1 className="text-primary font-black text-30">Your Cards</h1>
         <p className="text-gray-dark font-normal">Add, edit or delete your cards any time</p>
       </div>
-      <div className="mb-32">
+<div>
+<div className="mb-32">
       <CardList />
-     
       </div>
-  
+
+    {showCardForm &&
+       <div className= "absolute inset-0  bg-black bg-opacity-50 z-10 ">
+        <CardForm />
+        </div> 
+      }
+</div>
+ 
       <div > 
-          <Button />
+          <Button onAddCard={handleOpenForm} />
           
         </div>
     </div>

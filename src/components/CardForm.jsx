@@ -1,6 +1,6 @@
 import { useState } from "react"
 import "../styles/index.css"
-import Button from "./Button";
+
 
 
 export default function CardForm({onAddCard}) {
@@ -32,10 +32,10 @@ setCardInfo({
 
 
     return(
-<div className="relative w-full">
-    <h1>Add your card details</h1>
-
-      <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={handleSubmit}>
+<div className="bg-white border p-4 w-full h-32 ">
+   <h1>Add your card details</h1>
+<div className="flex-column items-center justify-center">
+<form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={handleSubmit}>
         <div className="mb-4 flex-column">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
             Name in the card
@@ -60,7 +60,7 @@ setCardInfo({
             className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
             id="number"
             type="text"
-            placeholder=" **** **** **** ****"
+            placeholder=" 0000 0000 0000 0000"
             name="number"
             value={cardInfo.number}
             onChange={handleChange}
@@ -75,7 +75,7 @@ setCardInfo({
             className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
             id="expiry"
             type="expiry"
-            placeholder=" **/**"
+            placeholder=" 00/00"
             name="expiry"
             value={cardInfo.expiry}
             onChange={handleChange}
@@ -90,14 +90,16 @@ setCardInfo({
             className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
             id="cvv"
             type="number"
-            placeholder="***"
+            placeholder=" 000"
             name="cvv"
             value={cardInfo.cvv}
             onChange={handleChange}
           />
         </div>
       </form>
- <Button/>
+
+</div>
+      
      
     </div>
     )
