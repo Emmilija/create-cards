@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" xmlSpace="preserve" version="1.1" viewBox="0 0 305 242.5" x="0px" y="0px" fillRule="evenodd" clipRule="evenodd">
+  <defs>
+    <style type="text/css">
+      .fil0 { fill: black; }
+    </style>
+  </defs>
+  <g>
+    <path className="fil0" d="M48 139l0 45c0 6 -5 10 -10 10l-28 0c-6 0 -10 -4 -10 -10l0 -31c0 -4 2 -7 5 -9l29 -14c6 -3 14 1 14 9z" />
+    <path className="fil0" d="M133 96l0 88c0 6 -4 10 -9 10l-29 0c-5 0 -9 -4 -9 -10l0 -74c0 -4 2 -7 5 -9l29 -14c6 -3 13 1 13 9z" />
+    <path className="fil0" d="M219 53l0 131c0 6 -4 10 -10 10l-28 0c-5 0 -10 -4 -10 -10l0 -117c0 -4 2 -7 6 -9l28 -14c7 -3 14 1 14 9z" />
+    <path className="fil0" d="M305 10l0 174c0 6 -5 10 -10 10l-29 0c-5 0 -9 -4 -9 -10l0 -160c0 -4 2 -7 5 -9l29 -14c6 -3 14 1 14 9z" />
+  </g>
+  <text x="0" y="209" fill="#000000" fontSize="5px" fontWeight="bold" fontFamily="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif">Created by Humantech</text>
+  <text x="0" y="214" fill="#000000" fontSize="5px" fontWeight="bold" fontFamily="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif">from the Noun Project</text>
+</svg>

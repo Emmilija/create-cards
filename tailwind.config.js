@@ -20,21 +20,21 @@ module.exports = {
       black: '#1A212C',
       success: '#19AC51',
       error: '#FC484C',
-      card: "#01c9c7"
+      card: "#01c9c7",
     },
     fontFamily: {
-      sans: ['Circular', 'sans-serif'],
+      sans: ['Circular Pro', "sans-serif" ],
     },
     extend: {
       spacing: {
-        '4': '1rem',   // Equivalent to 4px
-        '8': '2rem',   // Equivalent to 8px
-        '16': '4rem',  // Equivalent to 16px
-        '24': '6rem',  // Equivalent to 24px
-        '32': '8rem',  // Equivalent to 32px
-        '40': '10rem', // Equivalent to 40px
-        '48': '12rem', // Equivalent to 48px
-        '56': '14rem', // Equivalent to 56px
+        '4': '1rem',  
+        '8': '2rem',   
+        '16': '4rem', 
+        '24': '6rem',  
+        '32': '8rem',  
+        '40': '10rem', 
+        '48': '12rem', 
+        '56': '14rem',
       },
       borderRadius: {
         '16': '16px',

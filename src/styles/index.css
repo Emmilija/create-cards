@@ -2,12 +2,25 @@
 @tailwind components;
 
 .btn {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+.btn {
   background-color: #4C00C2;
     color: #fff;
     padding: 16px 110px;
     border-radius: 25px;
     cursor: pointer;
-    font: bold;
+    font-weight: bold;
+}
+
+.btn:disabled {
+  background-color: #D3D8E1;
+  color: white;
+  cursor: not-allowed;
+  font-weight: font-smoothing;
 }
 
 .card-container {
@@ -67,6 +80,42 @@ background-image: url('../assets//images/card-background-shape.svg');
   width: 80%;
   margin: 2rem;
 }
+
+
+.absolute.inset-0 {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; 
+  padding-top: 20vh; 
+}
+
+
+.shadow {
+  border-bottom: 1px solid grey;
+}
+
+
+.heading-container {
+border-radius: 24px 24px 0 0;
+  background-color: white;
+display: flex;
+justify-content: space-around;
+}
+
+.close-icon {
+  height: 35px;
+  width: 91%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+}
+
+
+
+
+
+
 
 
 
