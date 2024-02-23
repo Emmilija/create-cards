@@ -20,7 +20,6 @@ module.exports = {
       black: '#1A212C',
       success: '#19AC51',
       error: '#FC484C',
-      card: "#01c9c7",
     },
     fontFamily: {
       sans: ['Circular Pro', "sans-serif" ],

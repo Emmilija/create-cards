@@ -1,16 +1,77 @@
 import { useState } from "react"
 import "../styles/index.css"
 
+// Function to determine credit card type
+export function creditCardType(cc) {
+  let visa = new RegExp('^4[0-9]{12}(?:[0-9]{3})?$');
+  let mastercard = new RegExp('^5[1-5][0-9]{14}$|^2[2-7][0-9]{14}$');
 
+  if (visa.test(cc)) {
+    return 'VISA';
+  }
+  if (mastercard.test(cc)) {
+    return 'MASTERCARD';
+  }
+  return undefined;
+}
 
 export default function CardForm({onAddCard, onClose}) {
     const [cardInfo, setCardInfo] = useState({
         name:"",
         number:"",
         expiry:"",
-        cvv:""
+        cvv:"",
     });
 
+
+
+  // const [cardNumber, setCardNumber] = useState("");
+   
+
+
+//    function validateByLuhn(cardNumber) {
+//     let sum = 0;
+//     let shouldDouble = false;
+//     for (let i = cardNumber.length - 1; i >= 0; i--) {
+//        let digit = parseInt(cardNumber.charAt(i));
+//        if (shouldDouble) { 
+//           if ((digit *= 2) > 9) digit = digit - 9;
+//        }
+//        sum = sum + digit;
+//        shouldDouble = !shouldDouble;
+//     }
+//     return sum % 10 === 0;
+//  }
+//  const [message, setMessage] = useState("");
+//  const[isValid, setIsValid] = useState(false);
+
+//  function validateCreditCard(event) {
+//     let cardNumber = event.target.value;
+//     setCardNumber(cardNumber);
+
+//     let isValid = false;
+//     let message = " ";
+
+//     if (cardNumber.length === 16) {
+//         if (validateByLuhn(cardNumber)) {
+//             if (
+//               (cardNumber.startsWith("4")) ||
+//               (cardNumber.startsWith("5") && parseInt(cardNumber[1]) >= 1 && parseInt(cardNumber[1]) <= 5)
+//             ) {
+//                 isValid = true;
+//                 message = "Correct credit card number";
+//             } 
+//         }
+//     } else {
+//         message = "Credit card number must be 16 digits";
+//     }
+
+//     setMessage(message);
+//     setIsValid(isValid);
+
+
+//     setIsFormValid(checkFormValidity() && isValid);
+// }
     const [isFormValid, setIsFormValid] = useState(false);
 
     const handleSubmit = (event) => {
@@ -22,34 +83,78 @@ setCardInfo({
     expiry:"",
     cvv:""
 })
+onClose()
     }
 
     const handleChange = (event) => {
-        const {name, value} = event.target
-
-        setIsFormValid(checkFormValidity());
-        
+        const {name, value} = event.target;
+        let cardType = cardInfo.type
+       //handling carnumber  spaces
+        if (name === 'number') {
+          const formattedValue = value.replace(/\D/g, '');
+          const formattedNumber = formattedValue.replace(/(\d{4})/g, '$1 ').trim();
+     cardType = creditCardType(formattedValue);
+          console.log('Card Type:', cardType);
+       
+        setCardInfo({
+          ...cardInfo,
+          [name]: formattedNumber,
+          type: cardType,
+      })
+    }else if (name === 'expiry') {
+      // Logic for handling expiry date input
+      const formattedValue = value.replace(/\D/g, '');
+      const formattedExpiry = formattedValue.replace(/(\d{2})(\d{0,2})/, '$1/$2').trim();
+      if (/^(0[1-9]|1[0-2])\/\d{2}$/.test(formattedExpiry)) {
+        // console.log('Card expiry:', cardExpiry);
+          setCardInfo({
+              ...cardInfo,
+              [name]: formattedExpiry,
+          });
+      }else {
         setCardInfo({
             ...cardInfo,
-            [name]: value
-        })
+            [name]: formattedExpiry,
+        });
+    }
+  }
+    
+    else {
+      setCardInfo({
+        ...cardInfo,
+        [name]: value,
+      })
+    }
+      setIsFormValid(checkFormValidity());
+    }
+        // if (name === 'cardNumber') {
+        //   validateCreditCard(event);
+        // }
 
-      }
+     
+
+      
  // Check if any input field is empty
  const checkFormValidity = () => {
   for (let key in cardInfo) {
-      if (cardInfo[key].trim() === "") {
-          return false;
-      }
-  }
+    if (cardInfo.hasOwnProperty(key)) {
+        if (typeof cardInfo[key] !== 'string' || cardInfo[key].trim() === "") {
+            return false;
+        }
+    }
+}
   return true;
 };
   
 
 
     return(
-<div className="heading-container relative h-full  flex flex-col items-start w-full rounded-tl-lg">
-    <button className="close-icon flex justify-end " onClick={onClose}>
+      
+<div className="heading-container sm:h-1/4 lg:h-1/3 xl:h-1/2 flex flex-col  items-center w-full rounded-tl-lg -mt-4">
+
+
+  <div className=" ">
+  <button className="close-icon " onClick={onClose}>
     <svg
       className="w-8 h-4"
       width="16"
@@ -66,13 +171,16 @@ setCardInfo({
       />
     </svg>
     </button>
+  </div>
+    
 
-<div className="flex-column justify-center items-center my-16 ">
+<div className="flex-col justify-center items-center my-16 ">
 
-<form className="form-container bg-white shadow-md rounded px-8 pt-8" onSubmit={handleSubmit}>
-<h1 className="text-30  font-bold mb-8 ">Add your card details</h1>
+<form className="form-container bg-white flex flex-col justify-start shadow-md rounded pt-8 pb-4 sm:pb-8  " onSubmit={handleSubmit}>
+<h1 className="  font-bold mb-8
+ ">Add your card details</h1>
 <div className="h-32 space-y-6">
-        <div className=" mb-16">
+        <div className=" mb-8">
           <label className=" text-gray-700 text-16 font-bold mb-2" htmlFor="name">
             Name in card
           </label>
@@ -88,29 +196,34 @@ setCardInfo({
           />
         </div>
 
-        <div className="mb-16">
+        <div className="mb-8">
           <label className="block text-gray-700 text-16 font-bold mb-2" htmlFor="number">
             Card number
           </label>
           <input
-            className="shadow appearance-none border border-red-500 rounded w-full py-1 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
+            className = "shadow appearance-none border border-red-500 rounded w-full py-1 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
             id="number"
             type="text"
+            maxLength="19"
             placeholder=" 0000  0000  0000  0000"
             name="number"
             value={cardInfo.number}
             onChange={handleChange}
           />
+{/* <p className={isValid ? 'success' : 'error'}>
+    {message}
+  </p> */}
         </div>
 
-        <div className="mb-16">
-          <label className="text-gray-700 text-16 font-bold mb-2" htmlFor="number">
+        <div className="mb-8">
+          <label className="text-gray-700 text-16 font-bold mb-2" htmlFor="expiry">
             Expiry date
           </label>
           <input
             className="shadow appearance-none border border-red-500 rounded w-full py-1 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
             id="expiry"
-            type="expiry"
+            type="text"
+            maxLength="5"
             placeholder=" 00/00"
             name="expiry"
             value={cardInfo.expiry}
@@ -136,7 +249,8 @@ setCardInfo({
         
         <div className="flex justify-center">
                         <button className={`btn mx-auto text-16 ${isFormValid ? 'btn-active' : 'btn-disabled'}`}
-                                disabled={!isFormValid} >Confirm</button>
+                                disabled={!isFormValid} 
+                               >Confirm</button>
                     </div>
       </form>
 
