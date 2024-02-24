@@ -24,6 +24,8 @@ function App() {
   const handleCloseForm = () => {
     setShowCardForm(false);
   };
+
+
   return (
     <div className="w-full max-h-xs ">
       <div className="container mx-auto px-8 py-8  h-full flex flex-col justify-between ">
@@ -39,12 +41,12 @@ function App() {
         <div>
 
           <div className="mb-16">
-            <CardList cardInfo={cards} />
+            <CardList cards={cards} />
           </div>
 
           {showCardForm && (
             <div className="absolute inset-0 bg-black bg-opacity-75 w-full h-full ">
-              <CardForm onAddCard={handleAddCard} onClose={handleCloseForm} />
+              <CardForm handleAddCard={handleAddCard} onClose={handleCloseForm} />
             </div>
           )}
 

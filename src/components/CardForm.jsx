@@ -16,7 +16,7 @@ export function creditCardType(cc) {
   return undefined;
 }
 
-export default function CardForm({ onEditCard,onAddCard, onClose, cardInfo: initialCardInfo }) {
+export default function CardForm({ onEditCard,handleAddCard, onClose, formCardInfo: initialCardInfo }) {
   const [formCardInfo, setFormCardInfo] = useState(initialCardInfo || {
     name: "",
     number: "",
@@ -39,23 +39,27 @@ export default function CardForm({ onEditCard,onAddCard, onClose, cardInfo: init
     const handleChange = (event) => {
       const {name, value} = event.target;
       let cardType = formCardInfo.type
-     
+     //handling name only text
+      if (name === 'name') {
+        const onlyLetters = /^[A-Za-z\s]+$/; // 
+        if (!onlyLetters.test(value)) {
+       
+          return;
+        }
+      }
      //handling cardnumber  spaces
       if (name === 'number') {
         const formattedValue = value.replace(/\D/g, '');
         const formattedNumber = formattedValue.replace(/(\d{4})/g, '$1 ').trim();
    cardType = creditCardType(formattedValue);
+
         console.log('Card Type:', cardType);
-     
+
       setFormCardInfo({
         ...formCardInfo,
         [name]: formattedNumber,
         type: cardType,
-      
     })
-
-
-
   }else if (name === 'expiry') {
   // Logic for handling expiry date input
     const formattedValue = value.replace(/\D/g, '');
@@ -71,9 +75,7 @@ export default function CardForm({ onEditCard,onAddCard, onClose, cardInfo: init
           [name]: formattedExpiry,
       });
   }
-}
-  
-  else {
+}else {
     setFormCardInfo({
       ...formCardInfo,
       [name]: value,
@@ -103,16 +105,22 @@ useEffect(() => {
 
 
 
-
+//is not working edit 
     const handleSubmit = (event) => {
         event.preventDefault()
+        handleAddCard(formCardInfo)
+        setFormCardInfo({
+          name: '',
+          number: '',
+          expiry: '',
+          cvv: '',
+        });
         if (initialCardInfo) {
        
           onEditCard(formCardInfo);
         } else {
-          
-          onAddCard(formCardInfo);
-        }
+          handleAddCard(formCardInfo); 
+      }
         onClose();
       };
    
@@ -206,7 +214,8 @@ useEffect(() => {
           <input
             className="shadow appearance-none border border-red-500 w-full py-1 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
             id="cvv"
-            type="number"
+            maxLength="3"
+            type="text"
             placeholder=" 000"
             name="cvv"
             value={formCardInfo.cvv}
