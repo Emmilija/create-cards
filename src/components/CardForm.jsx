@@ -57,8 +57,7 @@ export default function CardForm({ onEditCard,onAddCard, onClose, cardInfo: init
 
 
   }else if (name === 'expiry') {
-  
-    // Logic for handling expiry date input
+  // Logic for handling expiry date input
     const formattedValue = value.replace(/\D/g, '');
     const formattedExpiry = formattedValue.replace(/(\d{2})(\d{0,2})/, '$1/$2').trim();
     if (/^(0[1-9]|1[0-2])\/\d{2}$/.test(formattedExpiry)) {
@@ -100,7 +99,7 @@ export default function CardForm({ onEditCard,onAddCard, onClose, cardInfo: init
 useEffect(() => {
   const isFormValid = checkFormValidity()
   setIsFormValid(isFormValid);
-}, [formCardInfo, checkFormValidity]);
+}, [formCardInfo, checkFormValidity, setIsFormValid]);
 
 
 
