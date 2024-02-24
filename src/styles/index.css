@@ -97,11 +97,14 @@ margin: 0.8rem 1rem ;
   color:#D3D8E1;
   
 }
+.font-bold {
+  font-weight: bold;
+}
 .card {
   color: white;
 }
 .small {
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   font-weight: bold;
 }
 

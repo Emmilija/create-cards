@@ -18,6 +18,7 @@ function App() {
   const handleAddCard = (newCard) => {
     setCards([...cards, newCard]);
     console.log("This is the new card",newCard)
+    setShowCardForm(false)
 };
 
   const handleCloseForm = () => {

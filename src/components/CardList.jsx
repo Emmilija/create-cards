@@ -5,18 +5,30 @@ import cardLogoVisa from "../assets/images/visa-logo.svg"
 import { useState } from "react"
 import CardForm from "./CardForm"
 
-export default function CardList({cardInfo}) {
+export default function CardList({cardInfo, onAddCard}) {
   const [showCardForm, setShowCardForm] = useState(false)
+  const  [selectedCard, setSelectedCard] = useState(null);
+  const [isButtonVisible, setButtonVisible] = useState(true);
   console.log(
     "CardList:", cardInfo); 
+
+
+    const handleCloseForm = () => {
+      setShowCardForm(false);
+      setButtonVisible(true); 
+      setSelectedCard(null);
+    }
+    
+const onEditCard = (card) => {
+  setSelectedCard(card);
+  setShowCardForm(true);
+  setButtonVisible(false);
+}
 
   if (!cardInfo) {
     return <div>No card information available</div>;
   }
 
-const editCard = () => {
-  setShowCardForm(!showCardForm)
-}
 
   return (
     <div className="h-auto">
@@ -43,19 +55,25 @@ const editCard = () => {
             </div>
             <div className="name-container">
               <div className="flex-col justify-between">
-                <p className="">{card.name}</p>
+                <p className="font-bold">{card.name}</p>
                 <p className="color">{card.number}</p>
               </div>
-              <button onClick={editCard} className="flex justify-end">
+              {isButtonVisible &&(
+              <button onClick={() => onEditCard(card)} className="flex justify-end">
                 <img src={editIcon} alt="Edit Icon" className="w-8 h-8" />
               </button>
+      )}
             </div>
           </div>
         </div>
       ))}
     {showCardForm && (
         <div className="form-container">
-     <CardForm />
+     <CardForm onEditCard={onEditCard} onAddCard={onAddCard} onClose={() => {
+                      handleCloseForm()
+                      setShowCardForm(false);
+                      setButtonVisible(true);
+                    }}  cardInfo={selectedCard} />
         </div>
       )}
         

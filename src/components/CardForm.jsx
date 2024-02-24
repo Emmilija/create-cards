@@ -1,11 +1,12 @@
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import "../styles/index.css"
+
 
 // Function to determine credit card type
 export function creditCardType(cc) {
   let visa = new RegExp('^4[0-9]{12}(?:[0-9]{3})?$');
   let mastercard = new RegExp('^5[1-5][0-9]{14}$|^2[2-7][0-9]{14}$');
-
+ 
   if (visa.test(cc)) {
     return 'VISA';
   }
@@ -15,17 +16,225 @@ export function creditCardType(cc) {
   return undefined;
 }
 
-export default function CardForm({onAddCard, onClose}) {
-    const [cardInfo, setCardInfo] = useState({
-        name:"",
-        number:"",
-        expiry:"",
-        cvv:"",
-    });
+export default function CardForm({ onEditCard,onAddCard, onClose, cardInfo: initialCardInfo }) {
+  const [formCardInfo, setFormCardInfo] = useState(initialCardInfo || {
+    name: "",
+    number: "",
+    expiry: "",
+    cvv: "",
+  });
+
+  
+    const [isFormValid, setIsFormValid] = useState(false);
+
+  
+    useEffect(() => {
+      if (initialCardInfo) {
+        setFormCardInfo(initialCardInfo);
+      }
+    }, [initialCardInfo]);
 
 
 
-  // const [cardNumber, setCardNumber] = useState("");
+    const handleChange = (event) => {
+      const {name, value} = event.target;
+      let cardType = formCardInfo.type
+     
+     //handling cardnumber  spaces
+      if (name === 'number') {
+        const formattedValue = value.replace(/\D/g, '');
+        const formattedNumber = formattedValue.replace(/(\d{4})/g, '$1 ').trim();
+   cardType = creditCardType(formattedValue);
+        console.log('Card Type:', cardType);
+     
+      setFormCardInfo({
+        ...formCardInfo,
+        [name]: formattedNumber,
+        type: cardType,
+      
+    })
+
+
+
+  }else if (name === 'expiry') {
+  
+    // Logic for handling expiry date input
+    const formattedValue = value.replace(/\D/g, '');
+    const formattedExpiry = formattedValue.replace(/(\d{2})(\d{0,2})/, '$1/$2').trim();
+    if (/^(0[1-9]|1[0-2])\/\d{2}$/.test(formattedExpiry)) {
+        setFormCardInfo({
+            ...formCardInfo,
+            [name]: formattedExpiry,
+        });
+    }else {
+      setFormCardInfo({
+          ...formCardInfo,
+          [name]: formattedExpiry,
+      });
+  }
+}
+  
+  else {
+    setFormCardInfo({
+      ...formCardInfo,
+      [name]: value,
+    })
+  }
+    setIsFormValid(checkFormValidity());
+  }
+   
+ 
+ // Check if any input field is empty
+ const checkFormValidity = useCallback(() => {
+  for (let key in formCardInfo) {
+    if (formCardInfo.hasOwnProperty(key)) {
+        if (typeof formCardInfo[key] !== 'string' || formCardInfo[key].trim() === "") {
+            return false;
+        }
+    }
+}
+  return true;
+},[formCardInfo])
+  
+
+useEffect(() => {
+  const isFormValid = checkFormValidity()
+  setIsFormValid(isFormValid);
+}, [formCardInfo, checkFormValidity]);
+
+
+
+
+    const handleSubmit = (event) => {
+        event.preventDefault()
+        if (initialCardInfo) {
+       
+          onEditCard(formCardInfo);
+        } else {
+          
+          onAddCard(formCardInfo);
+        }
+        onClose();
+      };
+   
+
+
+    return(
+      
+<div className="heading-container sm:h-1/4 lg:h-1/3 xl:h-1/2 flex flex-col  items-center w-full rounded-tl-lg -mt-4">
+
+
+  <div className=" ">
+  <button className="close-icon " onClick={onClose}>
+    <svg
+      className="w-8 h-4"
+      width="16"
+      height="16"
+      viewBox="0 0 14 14"
+      fill="#1A212C"
+      onClick={onClose}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M10.299 6.99971L13.316 3.98271C14.2272 3.07154 14.2272 1.59454 13.316 0.683375C12.4049 -0.227792 10.9279 -0.227792 10.0167 0.683375L6.99971 3.70038L3.98271 0.683375C3.07154 -0.227792 1.59454 -0.227792 0.683375 0.683375C-0.227792 1.59454 -0.227792 3.07154 0.683375 3.98271L3.70038 6.99971L0.683375 10.0167C-0.227792 10.9279 -0.227792 12.4049 0.683375 13.316C1.13837 13.7722 1.73571 13.9997 2.33304 13.9997C2.93038 13.9997 3.52654 13.7722 3.98271 13.316L6.99971 10.299L10.0167 13.316C10.4717 13.7722 11.069 13.9997 11.6664 13.9997C12.2637 13.9997 12.8599 13.7722 13.316 13.316C14.2272 12.4049 14.2272 10.9279 13.316 10.0167L10.299 6.99971Z"
+      />
+    </svg>
+    </button>
+  </div>
+    
+
+<div className="flex-col justify-center items-center my-16 ">
+
+<form className="form-container bg-white flex flex-col justify-start shadow-md rounded pt-8 pb-4 sm:pb-8  " onSubmit={handleSubmit}>
+<h1 className="  font-bold mb-8
+ ">Add your card details</h1>
+<div className="h-32 space-y-6">
+        <div className={`mb-8` }>
+          <label className=" text-gray-700 text-16 font-bold mb-2" htmlFor="name">
+            Name in card
+          </label>
+          <input
+            className="shadow appearance-none bg-transparent border-b border-gray-400 w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+            type="text"
+            id="name"
+            placeholder=" Jane Doe"
+            aria-label="Full name"
+            name="name"
+            value={formCardInfo.name}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className={`mb-8`}>
+          <label className="block text-gray-700 text-16 font-bold mb-2" htmlFor="number">
+            Card number
+          </label>
+          <input
+            className = "shadow appearance-none border border-red-500 rounded w-full py-1 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
+            id="number"
+            type="text"
+            maxLength="19"
+            placeholder=" 0000  0000  0000  0000"
+            name="number"
+            value={formCardInfo.number}
+            onChange={handleChange}
+          />
+
+        </div>
+
+        <div className={`mb-8 `}>
+          <label className="text-gray-700 text-16 font-bold mb-2" htmlFor="expiry">
+            Expiry date
+          </label>
+          <input
+            className="shadow appearance-none border border-red-500 rounded w-full py-1 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
+            id="expiry"
+            type="text"
+            maxLength="5"
+            placeholder=" 00/00"
+            name="expiry"
+            value={formCardInfo.expiry}
+            onChange={handleChange}
+          />
+        </div>
+      
+        <div className={`mb-8`}>
+          <label className="text-gray-700 text-16 font-bold mb-2" htmlFor="number">
+            CVC (security code)
+          </label>
+          <input
+            className="shadow appearance-none border border-red-500 w-full py-1 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
+            id="cvv"
+            type="number"
+            placeholder=" 000"
+            name="cvv"
+            value={formCardInfo.cvv}
+            onChange={handleChange}
+          />
+        </div>
+        </div>
+        
+        <div className="flex justify-center">
+                        <button className={`btn mx-auto text-16 ${isFormValid ? 'btn-active' : 'btn-disabled'}`}
+                                disabled={!isFormValid} 
+                               >Confirm</button>
+                    </div>
+      </form>
+
+</div>
+    </div>
+   
+      
+
+    );
+    }
+
+
+
+
+    // const [cardNumber, setCardNumber] = useState("");
    
 
 
@@ -72,192 +281,23 @@ export default function CardForm({onAddCard, onClose}) {
 
 //     setIsFormValid(checkFormValidity() && isValid);
 // }
-    const [isFormValid, setIsFormValid] = useState(false);
 
-    const handleSubmit = (event) => {
-        event.preventDefault()
-onAddCard(cardInfo);
-setCardInfo({
-    name:"",
-    number:"",
-    expiry:"",
-    cvv:""
-})
-onClose()
-    }
 
-    const handleChange = (event) => {
-        const {name, value} = event.target;
-        let cardType = cardInfo.type
-       //handling carnumber  spaces
-        if (name === 'number') {
-          const formattedValue = value.replace(/\D/g, '');
-          const formattedNumber = formattedValue.replace(/(\d{4})/g, '$1 ').trim();
-     cardType = creditCardType(formattedValue);
-          console.log('Card Type:', cardType);
-       
-        setCardInfo({
-          ...cardInfo,
-          [name]: formattedNumber,
-          type: cardType,
-      })
-    }else if (name === 'expiry') {
-      // Logic for handling expiry date input
-      const formattedValue = value.replace(/\D/g, '');
-      const formattedExpiry = formattedValue.replace(/(\d{2})(\d{0,2})/, '$1/$2').trim();
-      if (/^(0[1-9]|1[0-2])\/\d{2}$/.test(formattedExpiry)) {
-        // console.log('Card expiry:', cardExpiry);
-          setCardInfo({
-              ...cardInfo,
-              [name]: formattedExpiry,
-          });
-      }else {
-        setCardInfo({
-            ...cardInfo,
-            [name]: formattedExpiry,
-        });
-    }
-  }
-    
-    else {
-      setCardInfo({
-        ...cardInfo,
-        [name]: value,
-      })
-    }
-      setIsFormValid(checkFormValidity());
-    }
+// setFormCardInfo({
+//     name:"",
+//     number:"",
+//     expiry:"",
+//     cvv:""
+// })
+
+
         // if (name === 'cardNumber') {
         //   validateCreditCard(event);
         // }
 
-     
-
-      
- // Check if any input field is empty
- const checkFormValidity = () => {
-  for (let key in cardInfo) {
-    if (cardInfo.hasOwnProperty(key)) {
-        if (typeof cardInfo[key] !== 'string' || cardInfo[key].trim() === "") {
-            return false;
-        }
-    }
-}
-  return true;
-};
-  
 
 
-    return(
-      
-<div className="heading-container sm:h-1/4 lg:h-1/3 xl:h-1/2 flex flex-col  items-center w-full rounded-tl-lg -mt-4">
 
-
-  <div className=" ">
-  <button className="close-icon " onClick={onClose}>
-    <svg
-      className="w-8 h-4"
-      width="16"
-      height="16"
-      viewBox="0 0 14 14"
-      fill="#1A212C"
-      onClick={onClose}
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M10.299 6.99971L13.316 3.98271C14.2272 3.07154 14.2272 1.59454 13.316 0.683375C12.4049 -0.227792 10.9279 -0.227792 10.0167 0.683375L6.99971 3.70038L3.98271 0.683375C3.07154 -0.227792 1.59454 -0.227792 0.683375 0.683375C-0.227792 1.59454 -0.227792 3.07154 0.683375 3.98271L3.70038 6.99971L0.683375 10.0167C-0.227792 10.9279 -0.227792 12.4049 0.683375 13.316C1.13837 13.7722 1.73571 13.9997 2.33304 13.9997C2.93038 13.9997 3.52654 13.7722 3.98271 13.316L6.99971 10.299L10.0167 13.316C10.4717 13.7722 11.069 13.9997 11.6664 13.9997C12.2637 13.9997 12.8599 13.7722 13.316 13.316C14.2272 12.4049 14.2272 10.9279 13.316 10.0167L10.299 6.99971Z"
-      />
-    </svg>
-    </button>
-  </div>
-    
-
-<div className="flex-col justify-center items-center my-16 ">
-
-<form className="form-container bg-white flex flex-col justify-start shadow-md rounded pt-8 pb-4 sm:pb-8  " onSubmit={handleSubmit}>
-<h1 className="  font-bold mb-8
- ">Add your card details</h1>
-<div className="h-32 space-y-6">
-        <div className=" mb-8">
-          <label className=" text-gray-700 text-16 font-bold mb-2" htmlFor="name">
-            Name in card
-          </label>
-          <input
-            className="shadow appearance-none bg-transparent border-b border-gray-400 w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
-            type="text"
-            id="name"
-            placeholder=" Jane Doe"
-            aria-label="Full name"
-            name="name"
-            value={cardInfo.name}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="mb-8">
-          <label className="block text-gray-700 text-16 font-bold mb-2" htmlFor="number">
-            Card number
-          </label>
-          <input
-            className = "shadow appearance-none border border-red-500 rounded w-full py-1 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
-            id="number"
-            type="text"
-            maxLength="19"
-            placeholder=" 0000  0000  0000  0000"
-            name="number"
-            value={cardInfo.number}
-            onChange={handleChange}
-          />
-{/* <p className={isValid ? 'success' : 'error'}>
+        /* <p className={isValid ? 'success' : 'error'}>
     {message}
-  </p> */}
-        </div>
-
-        <div className="mb-8">
-          <label className="text-gray-700 text-16 font-bold mb-2" htmlFor="expiry">
-            Expiry date
-          </label>
-          <input
-            className="shadow appearance-none border border-red-500 rounded w-full py-1 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
-            id="expiry"
-            type="text"
-            maxLength="5"
-            placeholder=" 00/00"
-            name="expiry"
-            value={cardInfo.expiry}
-            onChange={handleChange}
-          />
-        </div>
-      
-        <div className="mb-16">
-          <label className="text-gray-700 text-16 font-bold mb-2" htmlFor="number">
-            CVC (security code)
-          </label>
-          <input
-            className="shadow appearance-none border border-red-500 w-full py-1 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
-            id="cvv"
-            type="number"
-            placeholder=" 000"
-            name="cvv"
-            value={cardInfo.cvv}
-            onChange={handleChange}
-          />
-        </div>
-        </div>
-        
-        <div className="flex justify-center">
-                        <button className={`btn mx-auto text-16 ${isFormValid ? 'btn-active' : 'btn-disabled'}`}
-                                disabled={!isFormValid} 
-                               >Confirm</button>
-                    </div>
-      </form>
-
-</div>
-    </div>
-   
-      
-
-    );
-    }
+  </p> */
