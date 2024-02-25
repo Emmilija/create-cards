@@ -7,16 +7,14 @@ import EditButton from "./EditButton"
 
 
 
-export default function CardList({ children, item }) {
+export default function CardList({ children, item
+ }) {
 
 const {deleteCard, selectedCardForEdit} = useContext(CardContext)
 
-  const isVisa = item.type === "Visa";
 
 
-
-
-
+const isVisa = item.cardName === 'visa';
 
 
 

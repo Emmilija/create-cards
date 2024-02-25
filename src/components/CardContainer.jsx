@@ -18,22 +18,31 @@ export default function CardContainer() {
     console.log(cardData)
 
     return (
-      <div >
+      <div className="" >
+
+
           <div className="w-full">
               {cardData.map((item) => (
                   <CardList key={item.id} item={item} />
               ))}
           </div>
 
-          {showForm && (
-              <div className="absolute inset-0 bg-black bg-opacity-75 w-full h-full ">
+          <div className="absolute inset-0 bg-black bg-opacity-75 w-full h-full ">
+    {showForm && (
+             
                 <CardForm />
-              </div>
+         
             )}
 
-              <div className="w-full flex justify-center items-center h-auto">
-                  <button className="btn " onClick={() => {openForm()}}>Add new card</button>
-              </div>
+</div>
+
+{!showForm && (
+        <div className="center-btn">
+          <button className="btn" onClick={() => openForm()}>
+            Add new card
+          </button>
+        </div>
+      )}
           
       </div>
   );

@@ -1,7 +1,6 @@
 
 import "./styles/global.css"
 import CardContainer from "./components/CardContainer";
-import CardForm from "./components/CardForm";
 import { CardProvider } from "./context/CardContext";
 
 

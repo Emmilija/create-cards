@@ -11,7 +11,7 @@ const [cardData, setCardData] = useState([
     number: '5456454545644564',
     expiry: '162',
     cvc: '123',
-    type: "Mastercard",
+    cardName: "mastercard",
     }
 ])
 
@@ -22,6 +22,7 @@ const [cardEdit, setCardEdit] = useState({
     edit: false,
 })
 
+ 
 
 //editing card
 const selectedCardForEdit = (item) => {
@@ -42,9 +43,14 @@ const openForm = () => {
 
 //add card
 const addCard = (newCard) => {
-    newCard.id = uuidv4()
-   setCardData([newCard, ...cardData])
-  }
+    newCard.id = uuidv4();
+    
+        setCardData([newCard, ...cardData])
+    
+    }
+   
+  
+  
 
 //delte card
 const deleteCard = (id) => {

@@ -4,10 +4,13 @@
 
 
 
-const  EditButton = ({ selectedCardForEdit, cardItem }) => {
+const  EditButton = ({ selectedCardForEdit, item }) => {
+
+
+
 
     return (
-        <button onClick={() => selectedCardForEdit(cardItem)} className="flex justify-end">
+        <button onClick={() => {selectedCardForEdit(item)}} className="flex justify-end">
                 <img src={editIcon}  alt="Edit Icon" className="w-8 h-8" />
               </button>
     );
