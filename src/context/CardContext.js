@@ -7,8 +7,8 @@ export const  CardProvider = ({children}) => {
 const [cardData, setCardData] = useState([
     {
     id: '1',
-    name: "Emilija",
-    number: '5456454545644564',
+    name: "Emilija Karatashevska",
+    number: '5456 4545 4564 4564',
     expiry: '162',
     cvc: '123',
     cardName: "mastercard",
@@ -22,15 +22,37 @@ const [cardEdit, setCardEdit] = useState({
     edit: false,
 })
 
- 
 
-//editing card
-const selectedCardForEdit = (item) => {
-    setCardEdit({item, edit: true,})
-    setShowForm(true)
+
+
+
+  //selected card for edit
+  const selectedCardForEdit = (selectedCard) => {
+    setCardEdit({item: selectedCard, edit: true})
+ 
 }
 
 
+//update card
+
+const updateCard = (id, updItem) => {
+        const updatedCards = cardData.map(card => {
+            if (card.id === id) {
+                return { ...card, ...updItem }; 
+            }
+            return card;
+        });
+    
+     
+        setCardData(updatedCards);
+    
+     
+        setCardEdit({ item: {}, edit: false });
+    };
+    
+
+
+ 
 const openForm = () => {
     setShowForm(true);
   };
@@ -49,8 +71,8 @@ const addCard = (newCard) => {
     
     }
    
-  
-  
+
+
 
 //delte card
 const deleteCard = (id) => {
@@ -64,12 +86,13 @@ const deleteCard = (id) => {
     return <CardContext.Provider value={{
         cardData,
         showForm,
+        cardEdit,
         openForm,
         closeForm,
         addCard,
         deleteCard,
         selectedCardForEdit,
-        cardEdit,
+        updateCard,
         
     }}>
         {children}

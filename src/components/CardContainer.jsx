@@ -6,7 +6,7 @@ import CardForm from "./CardForm"
 
 
 export default function CardContainer() {
-    const {cardData, showForm, openForm, closeForm} = useContext(CardContext)
+    const {cardData, showForm, openForm} = useContext(CardContext)
    
     
 
@@ -18,19 +18,20 @@ export default function CardContainer() {
     console.log(cardData)
 
     return (
+      <>
       <div className="" >
 
 
           <div className="w-full">
               {cardData.map((item) => (
-                  <CardList key={item.id} item={item} />
+                  <CardList key={item.id}  item={item} />
               ))}
           </div>
 
           <div className="absolute inset-0 bg-black bg-opacity-75 w-full h-full ">
     {showForm && (
              
-                <CardForm />
+                <CardForm cardData={cardData}/>
          
             )}
 
@@ -45,6 +46,7 @@ export default function CardContainer() {
       )}
           
       </div>
+      </>
   );
   
 }

@@ -15,19 +15,20 @@ export default function CardForm() {
   const[errorMessage, setErrorMessage] = useState('')
 const [cardName, setCardName] = useState('')
 
-  const {addCard, closeForm, selectedCardForEdit, cardEdit, } = useContext(CardContext)
+  const {addCard, closeForm, cardEdit, updateCard} = useContext(CardContext)
   
 
 
-// useEffect(() => {
-//   if(cardEdit.edit === true) {
-//     setBtnDisabled(false)
-//     setName(cardEdit.item.name)
-//     setNumber(cardEdit.item.number)
-//     setExpiry(cardEdit.item.expiry)
-//     setCvc(cardEdit.item.cvc)
-//   }
-// },[cardEdit])
+useEffect(() => {
+
+  if(cardEdit.edit === true) {
+    setBtnDisabled(false)
+    setName(cardEdit.item.name)
+    setNumber(cardEdit.item.number)
+    setExpiry(cardEdit.item.expiry)
+    setCvc(cardEdit.item.cvc)
+  }
+},[cardEdit])
 
 
     const handleName = (e) => {
@@ -39,6 +40,9 @@ const [cardName, setCardName] = useState('')
       if (inputName === "") {
         setErrorMessage("Please fill in your name ")
         setBtnDisabled(true)
+                }else if(inputName === "" || /\d/.test(inputName)) {
+                  setErrorMessage("Please fill in your name without numbers");
+                 
                 }
                 else {
                   setErrorMessage(null)
@@ -120,8 +124,15 @@ const [cardName, setCardName] = useState('')
         };
 
     const handleCvc = (e) => {
-        
-        setCvc(e.target.value)
+      const inputExpiry = e.target.value;
+        setCvc(inputExpiry)
+
+        const regexPattern = /^[0-9]{3,4}$/;
+        if (!regexPattern.test(inputExpiry)) {
+          setErrorMessage('Please enter a valid CVC (3 or 4 digits)');
+      } else {
+          setErrorMessage(''); // Clear the error message if the input is valid
+      }
       };
    
       const handleSubmit = (e) => {
@@ -134,12 +145,22 @@ const [cardName, setCardName] = useState('')
                 cvc,
                 cardName,
             };
-            addCard(newCard);
+        
+
+            if (cardEdit.edit === true) {
+             updateCard(cardEdit.item.id, newCard)
+          } else {
+              addCard(newCard);
+          }
+          
+          
+        
+         
             setName("");
             setNumber("");
             setExpiry("");
             setCvc("");
-            closeForm(); // Close the form after submitting
+            closeForm();
         } else {
             setErrorMessage("Please fill in all fields");
         }

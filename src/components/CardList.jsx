@@ -47,7 +47,7 @@ const isVisa = item.cardName === 'visa';
                 <p className="color">{item.number}</p>
               </div>
            
-             <EditButton />
+             <EditButton selectedCardForEdit={selectedCardForEdit} item={item}  />
 
 
               <button onClick={deleteCard}>
