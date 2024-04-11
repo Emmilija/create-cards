@@ -6,25 +6,7 @@ import { createContext, useState, useEffect } from "react";
  export const CardContext = createContext()
 
  export const  CardProvider = ({children}) => {
- const [cardData, setCardData] = useState([
-    {
-        id: 1,
-        name: "Emilija",
-        number: 5456454545644564,
-        expiry: 162,
-        cvv: 123,
-        type: "Mastercard",
-    },
-    {
-        id: 2,
-        name: "Emilija",
-        number: 4456454545644564,
-        expiry: 152,
-        cvv: 133,
-        type: "Visa",
-    }
-  
- ])
+ const [cardData, setCardData] = useState([])
 
  const [showForm, setShowForm] = useState(false);
 
@@ -42,7 +24,7 @@ import { createContext, useState, useEffect } from "react";
 //Fetch cards
  const fetchCard = async () => {
     try {
-         const response = await fetch(`/card?_sort=id`)
+         const response = await fetch(`/card?_sort=id/db.json`)
          const data = await response.json();
          setCardData(data);
      }

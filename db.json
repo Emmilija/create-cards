@@ -1,12 +1,12 @@
 {
   "card": [
     {
-      "id": "909f",
-      "name": "Emilija Karatashevska",
+      "name": "Emilija",
       "number": "5465 4564 6545 6465",
       "expiry": "45/64",
       "cvc": "456",
-      "cardName": "mastercard"
+      "cardName": "",
+      "id": "909f"
     },
     {
       "id": "3b76",
@@ -14,6 +14,14 @@
       "number": "4564 6465 4654 6465",
       "expiry": "45/64",
       "cvc": "456",
+      "cardName": "visa"
+    },
+    {
+      "id": "176b",
+      "name": "Filip",
+      "number": "4564 6546 5465 4654",
+      "expiry": "45/64",
+      "cvc": "465",
       "cardName": "visa"
     }
   ]
