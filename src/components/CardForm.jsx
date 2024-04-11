@@ -1,122 +1,202 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState, useContext, useEffect } from "react"
 import "../styles/index.css"
+import Button from "./Button"
+import { CardContext } from "../context/CardContext"
+import Success from '../assets/images/form-success.svg'
+import Error from '../assets/images/form-error.svg'
 
 
-// Function to determine credit card type
-export function creditCardType(cc) {
-  let visa = new RegExp('^4[0-9]{12}(?:[0-9]{3})?$');
-  let mastercard = new RegExp('^5[1-5][0-9]{14}$|^2[2-7][0-9]{14}$');
- 
-  if (visa.test(cc)) {
-    return 'VISA';
-  }
-  if (mastercard.test(cc)) {
-    return 'MASTERCARD';
-  }
-  return undefined;
-}
+export default function CardForm() {
 
-export default function CardForm({ onEditCard,onAddCard, onClose, cardInfo: initialCardInfo }) {
-  const [formCardInfo, setFormCardInfo] = useState(initialCardInfo || {
-    name: "",
-    number: "",
-    expiry: "",
-    cvv: "",
-  });
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+  const [expiry, setExpiry] = useState('');
+  const [cvc, setCvc] = useState('');
+  const[btnDisabled, setBtnDisabled] = useState(true)
+ const [nameError, setNameError] = useState('');
+const [numberError, setNumberError] = useState('');
+const [expiryError, setExpiryError] = useState('');
+const [cvcError, setCvcError] = useState('');
+const [cardName, setCardName] = useState('')
 
+const { addCard, closeForm, updateCard, initialData} = useContext(CardContext)
   
-    const [isFormValid, setIsFormValid] = useState(false);
-
-  
-    useEffect(() => {
-      if (initialCardInfo) {
-        setFormCardInfo(initialCardInfo);
-      }
-    }, [initialCardInfo]);
-
-
-
-    const handleChange = (event) => {
-      const {name, value} = event.target;
-      let cardType = formCardInfo.type
-     
-     //handling cardnumber  spaces
-      if (name === 'number') {
-        const formattedValue = value.replace(/\D/g, '');
-        const formattedNumber = formattedValue.replace(/(\d{4})/g, '$1 ').trim();
-   cardType = creditCardType(formattedValue);
-        console.log('Card Type:', cardType);
-     
-      setFormCardInfo({
-        ...formCardInfo,
-        [name]: formattedNumber,
-        type: cardType,
-      
-    })
-
-
-
-  }else if (name === 'expiry') {
-  
-    // Logic for handling expiry date input
-    const formattedValue = value.replace(/\D/g, '');
-    const formattedExpiry = formattedValue.replace(/(\d{2})(\d{0,2})/, '$1/$2').trim();
-    if (/^(0[1-9]|1[0-2])\/\d{2}$/.test(formattedExpiry)) {
-        setFormCardInfo({
-            ...formCardInfo,
-            [name]: formattedExpiry,
-        });
-    }else {
-      setFormCardInfo({
-          ...formCardInfo,
-          [name]: formattedExpiry,
-      });
-  }
-}
-  
-  else {
-    setFormCardInfo({
-      ...formCardInfo,
-      [name]: value,
-    })
-  }
-    setIsFormValid(checkFormValidity());
-  }
-   
- 
- // Check if any input field is empty
- const checkFormValidity = useCallback(() => {
-  for (let key in formCardInfo) {
-    if (formCardInfo.hasOwnProperty(key)) {
-        if (typeof formCardInfo[key] !== 'string' || formCardInfo[key].trim() === "") {
-            return false;
-        }
-    }
-}
-  return true;
-},[formCardInfo])
-  
+// eslint-disable-next-line
+const [formData, setFormData] = useState(initialData || { name: "", number: "", expiry: "", cvc: "" });
 
 useEffect(() => {
-  const isFormValid = checkFormValidity()
-  setIsFormValid(isFormValid);
-}, [formCardInfo, checkFormValidity]);
+  if (initialData) {
+    setName(initialData.name || '');
+    setNumber(initialData.number || '');
+    setExpiry(initialData.expiry || '');
+    setCvc(initialData.cvc || '');
+    setFormData(initialData);
+
+  }
+}, [initialData]);
 
 
+const handleName = (e) => {
+  const inputName = e.target.value;
 
+  setName(inputName);
 
-    const handleSubmit = (event) => {
-        event.preventDefault()
-        if (initialCardInfo) {
+  let nameError = "";
+  let btnDisabled = false;
+
+  switch (true) {
+    case /\d/.test(inputName):
+      nameError = "Enter a valid name";
+      btnDisabled = true;
+      break;
+    case inputName === "":
+      nameError = "Please fill in your name";
+      btnDisabled = true;
+      break;
+    default:
+      btnDisabled = false;
+      break;
+  }
+
+  setNameError(nameError);
+  setBtnDisabled(btnDisabled);
+};
+
+      const creditCardType = (cc) => {
+        let visa = new RegExp('^4[0-9]{12}(?:[0-9]{3})?$');
+        let mastercard = new RegExp('^5[1-5][0-9]{14}$|^2[2-7][0-9]{14}$');
        
-          onEditCard(formCardInfo);
-        } else {
-          
-          onAddCard(formCardInfo);
+        if (visa.test(cc)) {
+          return 'visa';
         }
-        onClose();
+        if (mastercard.test(cc)) {
+          return 'mastercard';
+        }
+        return "unknown";
+      }
+
+
+      const handleNumber = (e) => {
+        const inputValue = e.target.value;
+        const numberValue = inputValue.replace(/\D/g, ''); // Remove non-digit characters
+        let formattedValue = '';
+        const detectedCardName = creditCardType(numberValue);
+        let numberError = ''
+        // Update the state with the detected card name
+        setCardName(detectedCardName);
+      
+        // Update the state with the formatted value and detected card name
+        setCardName(currentCardName => currentCardName !== detectedCardName ? detectedCardName : currentCardName);
+      
+        // Add spaces every 4 digits
+        for (let i = 0; i < numberValue.length; i++) {
+          if (i > 0 && i % 4 === 0) {
+            formattedValue += ' ';
+          }
+          formattedValue += numberValue[i];
+        }
+      
+        // Update the state with the formatted value
+        setNumber(formattedValue);
+      
+        // Check if the input contains letters
+        const containsLetters = /[a-zA-Z]/;
+        if (containsLetters.test(inputValue)) {
+         numberError = 'Please enter a valid credit card number';
+        }
+      
+        // Set error message based on card type using switch
+        switch (detectedCardName) {
+          case 'visa':
+          case 'mastercard':
+            numberError = '';
+            break;
+          default:
+            numberError = 'Please enter a valid credit card number';
+            break;
+        }
+      
+        // Update the state with the error message
+        setNumberError(numberError);
+      };
+
+
+
+
+      const handleExpiry = (e) => {
+        const inputExpiry = e.target.value;
+        const formattedExpiry = inputExpiry.replace(/\D/g, ''); 
+   
+        let formattedDisplayExpiry = formattedExpiry;
+      
+        if (formattedExpiry.length > 2) {
+          formattedDisplayExpiry = formattedExpiry.slice(0, 2) + '/' + formattedExpiry.slice(2);
+        }
+        setExpiry(formattedDisplayExpiry);
+      
+        // Update the state with the formatted expiry and error message
+        const isValidExpiry = /\b(0[1-9]|1[0-2])\/?([0-9]{2})\b/.test(formattedDisplayExpiry);
+        let expiryError = '';
+      
+        switch (false) {
+          case isValidExpiry:
+            expiryError = 'Please enter a valid expiry date';
+            console.log("isValidExpiry:", isValidExpiry);
+            break;
+          case formattedDisplayExpiry === '00/00' || formattedDisplayExpiry === '':
+            expiryError = 'Please enter a valid expiry date';
+            break;
+          default:
+            expiryError = '';
+            break;
+        }
+      
+        setExpiryError(expiryError);
+      };
+
+      const handleCvc = (e) => {
+        const inputCvc = e.target.value;
+        setCvc(inputCvc);
+      
+        const regexPattern = /^[0-9]{3,4}$/;
+        let cvcError = '';
+      
+        switch (true) {
+          case !regexPattern.test(inputCvc):
+            cvcError = 'Please enter a valid security code';
+            break;
+          default:
+            cvcError = '';
+            break;
+        }
+      
+        setCvcError(cvcError);
       };
    
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (name !== "" && number !== "" && expiry !== "" && cvc !== "") {
+          const newCard = {
+            name,
+            number,
+            expiry,
+            cvc,
+            cardName,
+          };
+      
+          if (initialData && initialData.id) {
+            updateCard(initialData.id, newCard);
+          } else {
+            
+            addCard(newCard);
+          }
+      
+          // Reset form fields
+          setFormData({ name: "", number: "", expiry: "", cvc: "" });
+          closeForm();
+        }
+      };
+
 
 
     return(
@@ -124,15 +204,15 @@ useEffect(() => {
 <div className="heading-container sm:h-1/4 lg:h-1/3 xl:h-1/2 flex flex-col  items-center w-full rounded-tl-lg -mt-4">
 
 
-  <div className=" ">
-  <button className="close-icon " onClick={onClose}>
+<div>
+  <button onClick={() => closeForm()} className="close-icon " >
     <svg
       className="w-8 h-4"
       width="16"
       height="16"
       viewBox="0 0 14 14"
       fill="#1A212C"
-      onClick={onClose}
+      
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
@@ -145,16 +225,19 @@ useEffect(() => {
   </div>
     
 
-<div className="flex-col justify-center items-center my-16 ">
+<div className="make-form flex-col justify-center items-center my-16 ">
+<div className="make-form">
 
-<form className="form-container bg-white flex flex-col justify-start shadow-md rounded pt-8 pb-4 sm:pb-8  " onSubmit={handleSubmit}>
+
+<form onSubmit={handleSubmit} className="form-container bg-white flex flex-col justify-start shadow-md rounded pt-8 pb-4 sm:pb-8  " >
 <h1 className="  font-bold mb-8
  ">Add your card details</h1>
 <div className="h-32 space-y-6">
-        <div className={`mb-8` }>
-          <label className=" text-gray-700 text-16 font-bold mb-2" htmlFor="name">
+<label className=" text-gray-700 text-16 font-bold mb-2" htmlFor="name">
             Name in card
           </label>
+        <div className={`shows mb-8 flex flex-row` }>
+       
           <input
             className="shadow appearance-none bg-transparent border-b border-gray-400 w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
             type="text"
@@ -162,15 +245,25 @@ useEffect(() => {
             placeholder=" Jane Doe"
             aria-label="Full name"
             name="name"
-            value={formCardInfo.name}
-            onChange={handleChange}
+            value={name}
+            onChange={handleName}
+            
           />
-        </div>
+         {!nameError && name.trim() && (
+         
+  <img src={Success} alt="success" />
 
-        <div className={`mb-8`}>
-          <label className="block text-gray-700 text-16 font-bold mb-2" htmlFor="number">
+)}
+{nameError && (
+  <img src={Error} alt="error" />
+)}
+        </div>
+        
+        <label className="block text-gray-700 text-16 font-bold mb-2" htmlFor="number">
             Card number
           </label>
+        <div className={`mb-8  flex flex-row`}>
+        
           <input
             className = "shadow appearance-none border border-red-500 rounded w-full py-1 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
             id="number"
@@ -178,16 +271,21 @@ useEffect(() => {
             maxLength="19"
             placeholder=" 0000  0000  0000  0000"
             name="number"
-            value={formCardInfo.number}
-            onChange={handleChange}
+            value={number}
+            onChange={handleNumber}
           />
-
+ {(number && !numberError) && (
+    <img src={Success} alt="success" />
+  )}
+  {numberError && (
+    <img src={Error} alt="error" />
+  )}
         </div>
-
-        <div className={`mb-8 `}>
-          <label className="text-gray-700 text-16 font-bold mb-2" htmlFor="expiry">
+        <label className="text-gray-700 text-16 font-bold mb-2" htmlFor="expiry">
             Expiry date
           </label>
+        <div className={`mb-8  flex flex-row`}>
+       
           <input
             className="shadow appearance-none border border-red-500 rounded w-full py-1 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
             id="expiry"
@@ -195,31 +293,44 @@ useEffect(() => {
             maxLength="5"
             placeholder=" 00/00"
             name="expiry"
-            value={formCardInfo.expiry}
-            onChange={handleChange}
+            value={expiry}
+            onChange={handleExpiry}
           />
+            {(expiry && !expiryError) && (
+    <img src={Success} alt="success" />
+  )}
+  {expiryError && (
+    <img src={Error} alt="error" />
+  )}
         </div>
-      
-        <div className={`mb-8`}>
-          <label className="text-gray-700 text-16 font-bold mb-2" htmlFor="number">
+     
+        <label className="text-gray-700 text-16 font-bold mb-2" htmlFor="number">
             CVC (security code)
           </label>
+        <div className={`mb-8  flex flex-row`}>
+      
           <input
             className="shadow appearance-none border border-red-500 w-full py-1 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
             id="cvv"
-            type="number"
-            placeholder=" 000"
+            maxLength="3"
+            type="text"
+            placeholder="000"
             name="cvv"
-            value={formCardInfo.cvv}
-            onChange={handleChange}
+            value={cvc}
+            onChange={handleCvc}
           />
+ {(cvc && !cvcError) && (
+    <img src={Success} alt="success" />
+  )}
+  {cvcError && (
+    <img src={Error} alt="error" />
+  )}
         </div>
+    
         </div>
         
-        <div className="flex justify-center">
-                        <button className={`btn mx-auto text-16 ${isFormValid ? 'btn-active' : 'btn-disabled'}`}
-                                disabled={!isFormValid} 
-                               >Confirm</button>
+        <div className="flex justify-center items-center">
+                        <Button closeForm={() => {closeForm()}} onSubmit={handleSubmit} btnDisabled={btnDisabled} className="btn mx-auto text-16"> Confirm </Button>
                     </div>
       </form>
 
@@ -227,77 +338,6 @@ useEffect(() => {
     </div>
    
       
-
+    </div>
     );
     }
-
-
-
-
-    // const [cardNumber, setCardNumber] = useState("");
-   
-
-
-//    function validateByLuhn(cardNumber) {
-//     let sum = 0;
-//     let shouldDouble = false;
-//     for (let i = cardNumber.length - 1; i >= 0; i--) {
-//        let digit = parseInt(cardNumber.charAt(i));
-//        if (shouldDouble) { 
-//           if ((digit *= 2) > 9) digit = digit - 9;
-//        }
-//        sum = sum + digit;
-//        shouldDouble = !shouldDouble;
-//     }
-//     return sum % 10 === 0;
-//  }
-//  const [message, setMessage] = useState("");
-//  const[isValid, setIsValid] = useState(false);
-
-//  function validateCreditCard(event) {
-//     let cardNumber = event.target.value;
-//     setCardNumber(cardNumber);
-
-//     let isValid = false;
-//     let message = " ";
-
-//     if (cardNumber.length === 16) {
-//         if (validateByLuhn(cardNumber)) {
-//             if (
-//               (cardNumber.startsWith("4")) ||
-//               (cardNumber.startsWith("5") && parseInt(cardNumber[1]) >= 1 && parseInt(cardNumber[1]) <= 5)
-//             ) {
-//                 isValid = true;
-//                 message = "Correct credit card number";
-//             } 
-//         }
-//     } else {
-//         message = "Credit card number must be 16 digits";
-//     }
-
-//     setMessage(message);
-//     setIsValid(isValid);
-
-
-//     setIsFormValid(checkFormValidity() && isValid);
-// }
-
-
-// setFormCardInfo({
-//     name:"",
-//     number:"",
-//     expiry:"",
-//     cvv:""
-// })
-
-
-        // if (name === 'cardNumber') {
-        //   validateCreditCard(event);
-        // }
-
-
-
-
-        /* <p className={isValid ? 'success' : 'error'}>
-    {message}
-  </p> */
