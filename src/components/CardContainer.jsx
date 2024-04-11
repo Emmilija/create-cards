@@ -1,5 +1,4 @@
 import { CardContext } from "../context/CardContext"
-import CardData from "../data/CardData"
 import CardList from "./CardList"
 import {useContext } from "react"
 import CardForm from "./CardForm"
@@ -12,14 +11,24 @@ export default function CardContainer() {
 
       
 
-    if(!cardData || CardData.length === 0) {
+    if(!cardData || cardData.length === 0) {
         return <p>No data</p>
     }
     console.log(cardData)
 
     return (
-      <>
-      <div className="" >
+    
+      <div className="card-cont-component" >
+
+
+
+    {showForm && (
+             <div className="absolute inset-0 w-full h-full ">
+                <CardForm cardData={cardData}/>
+                </div>
+            )}
+
+
 
 
           <div className="card-list-container w-full">
@@ -28,14 +37,7 @@ export default function CardContainer() {
               ))}
           </div>
 
-          <div className="absolute inset-0 bg-black bg-opacity-75 w-full h-full ">
-    {showForm && (
-             
-                <CardForm cardData={cardData}/>
-         
-            )}
-
-</div>
+  
 
 {!showForm && (
         <div className="center-btn">
@@ -46,7 +48,7 @@ export default function CardContainer() {
       )}
           
       </div>
-      </>
+   
   );
   
 }

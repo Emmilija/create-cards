@@ -22,7 +22,7 @@ const [cardName, setCardName] = useState('')
 const { addCard, closeForm, updateCard, initialData} = useContext(CardContext)
   
 // eslint-disable-next-line
-const [formData, setFormData] = useState(initialData || { name: "", number: "", expiry: "", cvc: "" });
+const [formData, setFormData] = useState(initialData || { name: "", number: "", expiry: "", cvc: "", cardName: "" });
 
 useEffect(() => {
   if (initialData) {
@@ -30,10 +30,13 @@ useEffect(() => {
     setNumber(initialData.number || '');
     setExpiry(initialData.expiry || '');
     setCvc(initialData.cvc || '');
+    setCardName(initialData || '')
     setFormData(initialData);
-
+    setCardName(initialData.cardName || '');
   }
 }, [initialData]);
+
+
 
 
 const handleName = (e) => {
@@ -82,7 +85,7 @@ const handleName = (e) => {
         let formattedValue = '';
         const detectedCardName = creditCardType(numberValue);
         let numberError = ''
-        // Update the state with the detected card name
+       
         setCardName(detectedCardName);
       
         // Update the state with the formatted value and detected card name
@@ -192,7 +195,8 @@ const handleName = (e) => {
           }
       
           // Reset form fields
-          setFormData({ name: "", number: "", expiry: "", cvc: "" });
+          setFormData({ name: "", number: "", expiry: "", cvc: "", cardName: "" });
+    
           closeForm();
         }
       };
@@ -204,7 +208,7 @@ const handleName = (e) => {
 <div className="heading-container sm:h-1/4 lg:h-1/3 xl:h-1/2 flex flex-col  items-center w-full rounded-tl-lg -mt-4">
 
 
-<div>
+<div className="color-b">
   <button onClick={() => closeForm()} className="close-icon " >
     <svg
       className="w-8 h-4"
@@ -225,9 +229,9 @@ const handleName = (e) => {
   </div>
     
 
-<div className="make-form flex-col justify-center items-center my-16 ">
-<div className="make-form">
 
+
+<div className="around-form w-full">
 
 <form onSubmit={handleSubmit} className="form-container bg-white flex flex-col justify-start shadow-md rounded pt-8 pb-4 sm:pb-8  " >
 <h1 className="  font-bold mb-8
@@ -333,11 +337,13 @@ const handleName = (e) => {
                         <Button closeForm={() => {closeForm()}} onSubmit={handleSubmit} btnDisabled={btnDisabled} className="btn mx-auto text-16"> Confirm </Button>
                     </div>
       </form>
-
 </div>
+
+
+
     </div>
    
       
-    </div>
+
     );
     }

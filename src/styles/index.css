@@ -124,12 +124,20 @@ margin: 0.8rem 1rem ;
   font-weight: bold;
 }
 
-
-.absolute.inset-0 {
+.card-cont-component {
+ height: auto;
   display: flex;
-  justify-content: center;
-  align-items: flex-start; 
-  padding-top: 20vh; 
+  flex-direction: column;
+  justify-content: space-between;
+
+
+}
+.absolute.inset-0 {
+  position: absolute;
+width: 100%;
+  top: 0;
+  left: 0;
+  background-color: #444e5d50;
 }
 .info {
   display: flex;
@@ -168,6 +176,7 @@ margin: 0.8rem 1rem ;
   flex-direction: column;
  
 }
+
 .hidden {
   display: none;
 }
@@ -176,16 +185,22 @@ margin: 0.8rem 1rem ;
   font-size: 1.4rem;
 }
 .card-list-container {
-  background-color: white;
+  margin-bottom: 2rem;
 }
 .make-form {
   background-color: white;
+  width: 100%;
+}
+.around-form {
+  background-color: white;
+  width: 100%;
+  height: 78vh;
 }
 .form-container {
   position: absolute; 
-  top: 8rem; 
+  top: 6rem; 
   left: 50%; 
-  width: 80%;
+  width: 85%;
   background-color: white;
   transform: translateX(-50%); 
   padding-left: 0;
