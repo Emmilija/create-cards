@@ -1,23 +1,24 @@
- import editIcon from "../assets/images/edit-icon.svg"
 import { useContext } from "react";
+import editIcon from "../assets/images/edit-icon.svg"
 import { CardContext } from "../context/CardContext";
 
 
 
-const  EditButton = ({ selectedCardForEdit, item }) => {
+const  EditButton = ({item}) => {
 
-    const {openForm} = useContext(CardContext)
+  const {openForm} = useContext(CardContext)
 
     const handleEditClick = () => {
-        selectedCardForEdit(item);
-        openForm(); // Optionally open the form when edit button is clicked
+        openForm(item)
+        console.log(item)
+   
+ 
     };
     return (
-        <button onClick={handleEditClick} className="flex justify-end">
-                <img src={editIcon}  alt="Edit Icon" className="w-8 h-8" />
+        <button className="edit" onClick={handleEditClick} >
+                <img src={editIcon}  alt="Edit Icon" className="" />
               </button>
     );
 };
 
 export default EditButton;
- 

@@ -1,60 +1,44 @@
-import { createContext, useState } from "react";
-import { v4 as uuidv4 } from 'uuid';
+import { createContext, useState, useEffect } from "react";
 
-export const CardContext = createContext()
 
-export const  CardProvider = ({children}) => {
-const [cardData, setCardData] = useState([
-    {
-    id: '1',
-    name: "Emilija Karatashevska",
-    number: '5456 4545 4564 4564',
-    expiry: '162',
-    cvc: '123',
-    cardName: "mastercard",
+
+
+ export const CardContext = createContext()
+
+ export const  CardProvider = ({children}) => {
+ const [cardData, setCardData] = useState([])
+
+ const [showForm, setShowForm] = useState(false);
+
+ const [selectedCardInfo, setSelectedCardInfo] = useState(null)
+
+
+
+ useEffect(() => {
+    fetchCard()
+ 
+}, [])
+
+
+
+//Fetch cards
+ const fetchCard = async () => {
+    try {
+         const response = await fetch(`/card?_sort=id`)
+         const data = await response.json();
+         setCardData(data);
+     }
+    
+     catch (error) {
+         console.log('Error fetching card data:', error);
     }
-])
+ };
 
-const [showForm, setShowForm] = useState(false);
-
-const [cardEdit, setCardEdit] = useState({
-    item: {},
-    edit: false,
-})
-
-
-
-
-
-  //selected card for edit
-  const selectedCardForEdit = (selectedCard) => {
-    setCardEdit({item: selectedCard, edit: true})
+ const openForm = (cardData) => {
  
-}
-
-
-//update card
-
-const updateCard = (id, updItem) => {
-        const updatedCards = cardData.map(card => {
-            if (card.id === id) {
-                return { ...card, ...updItem }; 
-            }
-            return card;
-        });
-    
-     
-        setCardData(updatedCards);
-    
-     
-        setCardEdit({ item: {}, edit: false });
-    };
-    
-
-
- 
-const openForm = () => {
+    setSelectedCardInfo(cardData);
     setShowForm(true);
+      
   };
 
   const closeForm = () => {
@@ -62,40 +46,102 @@ const openForm = () => {
   };
 
 
+//update card
 
-//add card
-const addCard = (newCard) => {
-    newCard.id = uuidv4();
+const updateCard = async (id, updItem
+  ) => {
+    try {
+        const response = await fetch(`/card/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updItem)
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update card. Server returned status: ' + response.status);
+        }
+
+        const selectedCard = await response.json();
+
+const updatedCardData = cardData.map((card) => card.id === selectedCard.id ? selectedCard : card)
+
+        // Update the cardData state
+        setCardData(updatedCardData);
+        setSelectedCardInfo(selectedCard) 
+            } catch (error) {
+                console.error('Error updating card:', error);
+              
+            }
+       
+    } 
+
+
+    //add new card
+    const addCard = async(newCard) => {
+      try {
+          const response = await fetch('/card', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(newCard),
+          })
+          const data = await response.json()
+                  setCardData([data, ...cardData])
+              
+      }catch (error) {
+          console.error('Error adding user', error)
+      }
+  
+      }
+
+      
+      const deleteCard = async (id) => {
+        if(window.confirm("are you sure you want to delete this card? ")) {
+            try{
+                await fetch(`/card/${id}`, {method: 'DELETE'})
     
-        setCardData([newCard, ...cardData])
+            
+                setCardData(cardData.filter((item) => item.id !== id));
+             
+            }catch(error) {
+                console.error('Error deleting card:', error)
+            }
     
     }
-   
+    
+    }
 
 
 
-//delte card
-const deleteCard = (id) => {
-    if(window.confirm("are you sure you want to delete this card? ")) {
-        setCardData(cardData.filter((item) => item.id !== id))
-}
 
-
-
-}
     return <CardContext.Provider value={{
-        cardData,
-        showForm,
-        cardEdit,
-        openForm,
-        closeForm,
-        addCard,
-        deleteCard,
-        selectedCardForEdit,
-        updateCard,
+         cardData,
+         showForm,
+         updateCard,
+         openForm,
+         closeForm,
+         addCard,
+         deleteCard,
+         setSelectedCardInfo,
         
-    }}>
-        {children}
+         initialData: selectedCardInfo
+         ? {
+             id: selectedCardInfo.id,
+             name: selectedCardInfo.name,
+             number: selectedCardInfo.number,
+             expiry: selectedCardInfo.expiry,
+             cvc: selectedCardInfo.cvc,
+           }
+         : null,
+
+        
+     }}>
+         {children}
+
+    
     </CardContext.Provider>
 }
 

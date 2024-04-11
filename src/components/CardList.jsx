@@ -4,13 +4,13 @@ import cardLogoVisa from "../assets/images/visa-logo.svg"
 import { CardContext } from "../context/CardContext"
 import { useContext } from "react"
 import EditButton from "./EditButton"
+import DeleteButton from './DeleteButton'
 
 
-
-export default function CardList({ children, item
+export default function CardList({ item
  }) {
 
-const {deleteCard, selectedCardForEdit} = useContext(CardContext)
+const {deleteCard, selectedCardInfo, openForm} = useContext(CardContext)
 
 
 
@@ -46,8 +46,8 @@ const isVisa = item.cardName === 'visa';
                 <p className="font-bold">{item.name}</p>
                 <p className="color">{item.number}</p>
               </div>
-           
-             <EditButton selectedCardForEdit={selectedCardForEdit} item={item}  />
+              <DeleteButton deleteCard={deleteCard} item={item}/>
+             <EditButton selectedCardForEdit={selectedCardInfo} openForm={openForm} item={item}  />
 
 
               <button onClick={deleteCard}>
@@ -56,7 +56,7 @@ const isVisa = item.cardName === 'visa';
     
             </div>
           </div>
-          {children}
+ 
         </div>
      
 

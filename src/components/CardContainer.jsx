@@ -22,7 +22,7 @@ export default function CardContainer() {
       <div className="" >
 
 
-          <div className="w-full">
+          <div className="card-list-container w-full">
               {cardData.map((item) => (
                   <CardList key={item.id}  item={item} />
               ))}
