@@ -22,7 +22,7 @@ const [cardName, setCardName] = useState('')
 const { addCard, closeForm, updateCard, initialData} = useContext(CardContext)
   
 // eslint-disable-next-line
-const [formData, setFormData] = useState(initialData || { name: "", number: "", expiry: "", cvc: "", cardName: "" });
+const [formData, setFormData] = useState(initialData || { name: "", number: "", expiry: "", cvc: "", cardName: "", });
 
 useEffect(() => {
   if (initialData) {
@@ -32,7 +32,7 @@ useEffect(() => {
     setCvc(initialData.cvc || '');
     setCardName(initialData || '')
     setFormData(initialData);
-    setCardName(initialData.cardName || '');
+    setCardName(initialData.cardName);
   }
 }, [initialData]);
 
@@ -89,7 +89,7 @@ const handleName = (e) => {
         setCardName(detectedCardName);
       
         // Update the state with the formatted value and detected card name
-        setCardName(currentCardName => currentCardName !== detectedCardName ? detectedCardName : currentCardName);
+        // setCardName(currentCardName => currentCardName !== detectedCardName ? detectedCardName : currentCardName);
       
         // Add spaces every 4 digits
         for (let i = 0; i < numberValue.length; i++) {
@@ -135,13 +135,14 @@ const handleName = (e) => {
         if (formattedExpiry.length > 2) {
           formattedDisplayExpiry = formattedExpiry.slice(0, 2) + '/' + formattedExpiry.slice(2);
         }
+        console.log("Formatted Display Expiry:", formattedDisplayExpiry);
         setExpiry(formattedDisplayExpiry);
-      
+        console.log("Formatted Display Expiry:", formattedDisplayExpiry);
         // Update the state with the formatted expiry and error message
-        const isValidExpiry = /\b(0[1-9]|1[0-2])\/?([0-9]{2})\b/.test(formattedDisplayExpiry);
+        const isValidExpiry = /^([0-9]{2})\/(0[1-9]|1[0-2])$/.test(formattedDisplayExpiry);
         let expiryError = '';
       
-        switch (false) {
+        switch (true) {
           case isValidExpiry:
             expiryError = 'Please enter a valid expiry date';
             console.log("isValidExpiry:", isValidExpiry);
@@ -300,12 +301,12 @@ const handleName = (e) => {
             value={expiry}
             onChange={handleExpiry}
           />
-            {(expiry && !expiryError) && (
-    <img src={Success} alt="success" />
-  )}
-  {expiryError && (
-    <img src={Error} alt="error" />
-  )}
+            {expiryError && (
+            <img src={Error} alt="error" />
+        )}
+        {expiry && !expiryError && (
+            <img src={Success} alt="success" />
+        )}
         </div>
      
         <label className="text-gray-700 text-16 font-bold mb-2" htmlFor="number">
