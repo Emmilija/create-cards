@@ -187,7 +187,7 @@ const handleName = (e) => {
             cvc,
             cardName,
           };
-      
+       
           if (initialData && initialData.id) {
             updateCard(initialData.id, newCard);
           } else {
@@ -235,8 +235,7 @@ const handleName = (e) => {
 <div className="around-form w-full">
 
 <form onSubmit={handleSubmit} className="form-container bg-white flex flex-col justify-start shadow-md rounded pt-8 pb-4 sm:pb-8  " >
-<h1 className="  font-bold mb-8
- ">Add your card details</h1>
+<h1 className="font-bold mb-8">{initialData ? 'Edit your card details' : 'Add your card details'}</h1>
 <div className="h-32 space-y-6">
 <label className=" text-gray-700 text-16 font-bold mb-2" htmlFor="name">
             Name in card

@@ -6,24 +6,7 @@ import { createContext, useState, useEffect } from "react";
  export const CardContext = createContext()
 
  export const  CardProvider = ({children}) => {
- const [cardData, setCardData] = useState([
-    {
-        id: 1,
-       name: "Emilija",
-       number: 5456454545644564,
-       expiry: 162,
-       cvv: 123,
-       type: "Mastercard",
-    },
-    {
-        id: 2,
-       name: "Magdalena",
-       number: 5456477845844564,
-       expiry: 1212,
-       cvv: 153,
-       type: "Visa",
-    },
- ])
+ const [cardData, setCardData] = useState([])
 
  const [showForm, setShowForm] = useState(false);
 

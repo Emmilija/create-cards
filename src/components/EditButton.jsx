@@ -10,7 +10,7 @@ const  EditButton = ({item}) => {
 
     const handleEditClick = () => {
         openForm(item)
-        console.log(item)
+     
    
  
     };
